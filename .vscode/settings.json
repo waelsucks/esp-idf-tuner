@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "pins.h": "c",
+        "esp_task_wdt.h": "c",
+        "esp_adc_cal.h": "c",
+        "perf.h": "c",
+        "adc.h": "c",
+        "typeinfo": "c"
+    }
+}
