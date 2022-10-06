@@ -11,9 +11,13 @@ void app_main() {
     init_adc();
     start_sampling(10000);
 
-    vTaskDelay(pdMS_TO_TICKS(2 * 1000));
+    while (1)
+    {
+        printf("Frequency: %.2f\n", process_frequency());
+        
+        reset_sampling();
+        vTaskDelay(pdMS_TO_TICKS(0.5 * 1000));
 
+    }
     
-    stop_sampling();
-
 }
