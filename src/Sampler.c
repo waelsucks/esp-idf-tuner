@@ -1,58 +1,78 @@
-#include <driver/adc.h>
-#include <esp_task_wdt.h>
-#include <soc/adc_channel.h>
-#include <esp_adc_cal.h>
-
 #include "Sampler.h"
 
+#include "esp_timer.h"
+#include "esp_log.h"
+#include "esp_sleep.h"
 
-static const adc_channel_t channel  = ADC_CHANNEL_6;
-static const adc_bits_width_t width = ADC_WIDTH_BIT_12;
+static const char * TAG = "SAMPLER";
 
-static esp_timer_handle_t sample_timer;
+static esp_timer_handle_t sampler_handle;
+
+// TEMP
+
+static int x = 0;
+
+// --
+
+static int duration;
+static int sampling_frequency;
 
 void init_adc() {
 
-    adc1_config_width(width);
-    adc1_config_channel_atten(channel, ADC_ATTEN_DB_11);
+    ESP_LOGI(TAG, "Initiating sampler...");
 
-    const esp_timer_create_args_t sample_timer_args = {
-            .callback = &sample,
-            .name = "sampler"
+    const esp_timer_create_args_t sampler_args = {
+
+        .callback   = &sample,
+        .name       = "SAMPLER"
+
     };
-    
-    esp_timer_create(&sample_timer_args, &sample_timer);
+
+    ESP_ERROR_CHECK(esp_timer_create(&sampler_args, &sampler_handle));
 
 }
 
 void start_sampling(int frequency) {
 
-    printf("Staring!\n");
+    sampling_frequency = frequency;
 
-    uint64_t t = 10000000 / frequency;
-
-    esp_timer_start_periodic(sample_timer, t);
+    float period = (1 * 1000000) / sampling_frequency;
+    ESP_ERROR_CHECK(esp_timer_start_periodic(sampler_handle, period));
 
 }
 
 void sample() {
 
-    int adc_reading = adc1_get_raw(channel);
+    x ++;
 
-    printf(">ADC_READING:%d\n", adc_reading);
+    if (x > 500)
+        x *= 0;
+
+    duration = esp_timer_get_time() - duration;
 
 }
 
 void stop_sampling() {
 
-    esp_timer_stop(sample_timer);
+    ESP_ERROR_CHECK(esp_timer_stop(sampler_handle));
+    ESP_ERROR_CHECK(esp_timer_delete(sampler_handle));
 
 }
 
-// MULTISAMPLING?
+void reset_sampling() {
 
-        // for (int i = 0; i < NO_OF_SAMPLES; i++) {
-        //     adc_reading += adc1_get_raw((adc1_channel_t)channel);
-        // }
+    ESP_ERROR_CHECK(esp_timer_stop(sampler_handle));
 
-        // adc_reading /= NO_OF_SAMPLES;
+    duration = 0;
+
+    // ESP_ERROR_CHECK(esp_timer_start_periodic(sampler_handle, sampling_frequency));
+
+}
+
+int get_x() {
+    return x;
+}
+
+float get_duration() {
+    return duration;
+}

@@ -5,6 +5,9 @@
         "esp_adc_cal.h": "c",
         "perf.h": "c",
         "adc.h": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "esp_log.h": "c",
+        "sdkconfig.h": "c",
+        "esp_timer.h": "c"
     }
 }
