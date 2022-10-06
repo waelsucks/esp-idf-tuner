@@ -6,8 +6,6 @@
 #include "esp_log.h"
 #include "esp_sleep.h"
 
-static const char * TAG = "SAMPLER";
-
 static const adc_channel_t channel  = ADC_CHANNEL_6;
 static const adc_bits_width_t width = ADC_WIDTH_BIT_12;
 
