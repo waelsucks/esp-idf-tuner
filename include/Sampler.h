@@ -14,10 +14,6 @@ void stop_sampling();
 
 void reset_sampling();
 
-void flush_buffers();
-
-int get_adc_reading();
-
 float process_frequency();
 
 

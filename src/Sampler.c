@@ -23,16 +23,12 @@ static int crossings    = 0;
 
 void init_adc() {
 
-    ESP_LOGI(TAG, "Initiating sampler...");
-
     ESP_ERROR_CHECK(adc1_config_width(width));
     ESP_ERROR_CHECK(adc1_config_channel_atten(channel, width));
 
     const esp_timer_create_args_t sampler_args = {
-
         .callback   = &sample,
         .name       = "SAMPLER"
-
     };
 
     ESP_ERROR_CHECK(esp_timer_create(&sampler_args, &sampler_handle));
@@ -64,8 +60,6 @@ void stop_sampling() {
 
     ESP_ERROR_CHECK(esp_timer_stop(sampler_handle));
     ESP_ERROR_CHECK(esp_timer_delete(sampler_handle));
-
-    duration = esp_timer_get_time() - prev_duration;
 
 }
 
